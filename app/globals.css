@@ -1,26 +1,102 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
+/* 🌿 Tadbeer Dark Theme Global Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary-color: #8FC241;
+  --secondary-color: #90C241;
+  --accent-color: #18BAD6;
+  --text-color: #E5E5E5;
+  --background-color: #0D0D0D;
+  --surface-color: #1A1A1A;
+  --outline-color: rgba(255, 255, 255, 0.08);
+  --font-family: 'Poppins', sans-serif;
+  --border-radius: 0.625rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 🖤 Body base */
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 🌫️ Card / Section Styles */
+.section-dark {
+  background: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 20px rgba(143, 194, 65, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Outline-based styling */
+.outline-style {
+  border: 1px solid var(--outline-color);
+  border-radius: var(--border-radius);
+}
+
+/* ✨ Glow hover effect */
+.glow-hover:hover {
+  box-shadow: 0 0 15px rgba(143, 194, 65, 0.4);
+}
+
+/* 🌈 Animated Gradient Background (for hero sections) */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
+.animate-gradientMove {
+  background: linear-gradient(135deg, #0D0D0D, #1A1A1A, #000000);
+  background-size: 200% 200%;
+  animation: gradientMove 10s ease infinite;
+}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fadeIn {
+  animation: fadeIn 1.2s ease-in-out forwards;
+}
+
+/* 🪶 Navbar slide-down animation */
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out forwards;
+}
+
+/* 🎨 Button glow */
+.btn-glow {
+  background: var(--primary-color);
+  color: #fff;
+  transition: all 0.3s ease;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 12px rgba(143, 194, 65, 0.6);
+  transform: scale(1.03);
 }
