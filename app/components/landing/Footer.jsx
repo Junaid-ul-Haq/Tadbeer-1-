@@ -2,11 +2,11 @@
 import { motion } from "framer-motion";
 import {
   FaFacebook,
-  FaTwitter,
   FaInstagram,
   FaLinkedin,
   FaPaperPlane,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6"; 
 
 export default function Footer() {
   return (
@@ -36,21 +36,32 @@ export default function Footer() {
           </p>
 
           {/* Social Icons */}
-          <div className="flex gap-4 mt-6">
-            {[FaFacebook, FaTwitter, FaInstagram, FaLinkedin].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="p-3 border border-white/10 bg-white/5 text-gray-300 rounded-full 
-                shadow-[0_0_10px_rgba(255,255,255,0.05)] 
-                hover:text-white hover:bg-[var(--accent-color)] 
-                hover:shadow-[0_0_20px_rgba(24,186,214,0.6)] 
-                transition-all duration-300"
-              >
-                <Icon className="text-lg" />
-              </a>
-            ))}
-          </div>
+    
+    <div className="flex gap-4 mt-6">
+      {[
+        { Icon: FaFacebook, link: "https://facebook.com/yourprofile" },
+        { Icon: FaXTwitter, link: "https://x.com/CentreTadb42387" }, // ✅ X link
+        { Icon: FaInstagram, link: "https://www.instagram.com/tadbeerofficial?fbclid=IwY2xjawNLDYpleHRuA2FlbQIxMABicmlkETA4bVFLeW5paHZYeHdVUmRLAR7hJvaG86pORayMMZe_8ZkoK0NS0Zi4MRwa2MFt6sznMnjeIp7ZhzLEdi4dfA_aem_AHhYs999ZunLiRTZvMYG_g" },
+        { Icon: FaLinkedin, link: "https://www.linkedin.com/company/tadbeerofficial/?viewAsMember=true" },
+      ].map(({ Icon, link }, i) => (
+        <a
+          key={i}
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-3 border border-white/10 bg-white/5 text-gray-300 rounded-full 
+          shadow-[0_0_10px_rgba(255,255,255,0.05)] 
+          hover:text-white hover:bg-[var(--accent-color)] 
+          hover:shadow-[0_0_20px_rgba(24,186,214,0.6)] 
+          transition-all duration-300"
+        >
+          <Icon className="text-lg" />
+        </a>
+      ))}
+    </div>
+  
+
+
         </motion.div>
 
         {/* 🔸 Quick Links */}

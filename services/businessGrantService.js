@@ -2,14 +2,23 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const businessGrantService = {
   createGrant: async (token, formData) => {
-    const res = await fetch(`${BASE_URL}/business/createGrant`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.message || "Failed to submit grant");
-    return data;
+    try {
+      const res = await fetch(`${BASE_URL}/business/createGrant`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        console.error("Create Grant Error Response:", data);
+        throw new Error(data.message || "Failed to submit grant");
+      }
+      return data;
+    } catch (error) {
+      console.error("Grant creation failed:", error);
+      throw error;
+    }
   },
 
   getMyGrants: async (token) => {
@@ -41,7 +50,8 @@ export const businessGrantService = {
       body: JSON.stringify({ status }),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.message || "Failed to update grant status");
+    if (!res.ok)
+      throw new Error(data.message || "Failed to update grant status");
     return data;
   },
 
@@ -50,7 +60,8 @@ export const businessGrantService = {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.message || "Failed to fetch grant details");
+    if (!res.ok)
+      throw new Error(data.message || "Failed to fetch grant details");
     return data;
   },
 };

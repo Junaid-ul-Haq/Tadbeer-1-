@@ -8,15 +8,19 @@ import {
 } from "@/redux/slices/businessGrantSlice";
 import GrantTable from "@/app/components/dashboard/grants/GrantTable";
 import Modal from "@/app/components/dashboard/scholoarship/Modal";
+import CNICPreview from "@/app/components/cnicPreview";
+import { openProtectedFile } from "@/services/fileService";
+import { Link } from "lucide-react";
 
 export default function AdminGrantDashboard() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+  console.log("tokenin domain:",token)
   const { allGrants, selectedGrant, loading, totalPages } = useSelector(
   (state) => state.businessGrant
 );
-
-
+console.log("data of path",allGrants)
+console.log("all grants:",selectedGrant)
   const [showDetail, setShowDetail] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -32,11 +36,16 @@ export default function AdminGrantDashboard() {
   const handleStatus = async (id, status) => {
     await dispatch(updateGrantStatus({ token, id, status }));
   };
+const handleView = async (id) => {
+  const res = await dispatch(getGrantById({ token, id }));
+  const grant = res.payload; 
+  console.log("Grant CNIC paths:", {
+    cnicFront: grant.user?.cnicFront,
+    cnicBack: grant.user?.cnicBack,
+  });
+  setShowDetail(true);
+};
 
-  const handleView = async (id) => {
-    await dispatch(getGrantById({ token, id }));
-    setShowDetail(true);
-  };
 
   return (
     <div className="p-6">
@@ -111,78 +120,114 @@ export default function AdminGrantDashboard() {
       />
 
       {/* Modal for Grant Details */}
-      <Modal show={showDetail} onClose={() => setShowDetail(false)}>
+
+
+<Modal show={showDetail} onClose={() => setShowDetail(false)}>
   {selectedGrant ? (
-    <div className="p-4">
-       <h2 className="text-2xl font-bold mb-2 text-[var(--primary-color)]">
-              Business Grants Details
-            </h2>
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
+      {/* Modal Container */}
+      <div className="bg-[var(--surface-color)] text-[var(--text-color)] w-[95%] max-w-6xl h-[90vh] rounded-[var(--border-radius)] shadow-lg font-[var(--font-family)] flex flex-col overflow-hidden">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 border-b border-[var(--outline-color)] shrink-0">
+          <h2 className="text-3xl font-bold text-[var(--primary-color)]">
+            Business Grant Details
+          </h2>
+          <button
+            onClick={() => setShowDetail(false)}
+            className="px-4 py-2 bg-[var(--primary-color)] text-[var(--background-color)] font-bold rounded hover:opacity-90"
+          >
+            Close
+          </button>
+        </div>
 
-      <p>
-        <strong>Name:</strong> {selectedGrant.user?.name || "N/A"}
-      </p>
-      <p>
-        <strong>Email:</strong> {selectedGrant.user?.email || "N/A"}
-      </p>
-      <p>
-            <p><strong>Phone:</strong> {selectedGrant.user?.phone}</p>
-            
-            <p><strong>CnicFront:</strong> {selectedGrant.user?.cnicFront}</p>
-             <p><strong>CnicBack:</strong> {selectedGrant.user?.cnicFront}</p>
+        {/* Main Content */}
+        <div className="flex flex-1 gap-8 overflow-hidden p-6">
+          {/* Left Column */}
+          <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-3">
+            <div className="space-y-3">
+              <p><strong>Name:</strong> {selectedGrant.user?.name || "N/A"}</p>
+              <p><strong>Email:</strong> {selectedGrant.user?.email || "N/A"}</p>
+              <p><strong>Phone:</strong> {selectedGrant.user?.phone || "N/A"}</p>
 
+              <p><strong>Title:</strong> {selectedGrant.title || "N/A"}</p>
 
-            <p><strong>Email:</strong> {selectedGrant.user?.email}</p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span
+                  className={`capitalize font-semibold ${
+                    selectedGrant.status === "approved"
+                      ? "text-green-500"
+                      : selectedGrant.status === "rejected"
+                      ? "text-red-500"
+                      : "text-yellow-400"
+                  }`}
+                >
+                  {selectedGrant.status || "pending"}
+                </span>
+              </p>
 
+              <p>
+                <strong>Submitted On:</strong>{" "}
+                {selectedGrant.createdAt
+                  ? new Date(selectedGrant.createdAt).toLocaleString()
+                  : "N/A"}
+              </p>
 
+              {/* CNIC Preview */}
+              {(selectedGrant.user?.cnicFront ||
+                selectedGrant.user?.cnicBack) && (
+                <CNICPreview
+                  cnicFront={selectedGrant.user.cnicFront}
+                  cnicBack={selectedGrant.user.cnicBack}
+                  token={token}
+                />
+              )}
 
+              {/* Other Documents */}
+            {/* Other Documents Section */}
+<div className="mt-6 border-t border-gray-700 pt-4">
+  <h3 className="font-semibold text-lg mb-3 text-[var(--primary-color)]">
+    Uploaded Proposal
+  </h3>
 
-        <strong>Title:</strong> {selectedGrant.title || "N/A"}
-      </p>
-      <p>
-        <strong>Amount Requested:</strong>{" "}
-        {selectedGrant.amountRequested
-          ? `PKR ${selectedGrant.amountRequested}`
-          : "N/A"}
-      </p>
-      <p>
-        <strong>Description:</strong>{" "}
-        {selectedGrant.description || "N/A"}
-      </p>
-      <p>
-        <strong>Status:</strong>{" "}
-        <span
-          className={`capitalize font-semibold ${
-            selectedGrant.status === "approved"
-              ? "text-[var(--secondary-color)]"
-              : selectedGrant.status === "rejected"
-              ? "text-red-600"
-              : "text-[var(--accent-color)]"
-          }`}
-        >
-          {selectedGrant.status || "pending"}
-        </span>
-      </p>
-<div>
-              <h3 className="font-semibold mt-2 text-lg">Documents:</h3>
-              <ul className="list-disc pl-6 space-y-1">
-                {selectedGrant.documents.map((doc) => (
-                  <li key={doc.filePath}>
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      className="text-[var(--accent-color)] underline hover:opacity-80"
-                    >
-                      {doc.fileName}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+  {selectedGrant.proposal || selectedGrant.proposal.filePath ? (
+    <div className="flex items-center gap-3">   
+      <span className="text-[var(--accent-color)]">
+        {selectedGrant.proposal.fileName || "Proposal Document"}
+      </span>
+      <span className="text-sm text-gray-400">
+        ({selectedGrant.proposal.fileType?.split("/")[1] || "file"})
+      </span>
     </div>
   ) : (
-    <p className="p-4 text-center">Loading...</p>
+    <p className="text-gray-400 text-sm italic">No proposal uploaded</p>
+  )}
+</div>
+
+
+
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="flex-1 flex flex-col gap-4 overflow-y-auto pl-3 border-l border-[var(--outline-color)]">
+            <div className="flex flex-col">
+              <strong>Description:</strong>
+              <div className="border rounded p-3 min-h-[200px] max-h-[65vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-800 bg-[var(--background-color)] text-sm">
+                {selectedGrant.description || "N/A"}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <p className="text-center py-4">Loading...</p>
   )}
 </Modal>
+
+
 
     </div>
   );

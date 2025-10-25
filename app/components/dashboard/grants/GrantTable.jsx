@@ -19,7 +19,6 @@ export default function GrantTable({
             <th className="px-4 py-3 border-b border-gray-600">Name</th>
             <th className="px-4 py-3 border-b border-gray-600">Email</th>
             <th className="px-4 py-3 border-b border-gray-600">Title</th>
-            <th className="px-4 py-3 border-b border-gray-600">Amount</th>
             <th className="px-4 py-3 border-b border-gray-600">Status</th>
             {(onApprove || onReject || onView) && (
               <th className="px-4 py-3 border-b border-gray-600">Actions</th>
@@ -54,9 +53,7 @@ export default function GrantTable({
                 </td>
                 <td className="px-4 py-3">{g.user?.email || "N/A"}</td>
                 <td className="px-4 py-3 font-semibold">{g.title || "—"}</td>
-                <td className="px-4 py-3">
-                  {g.amountRequested ? `PKR ${g.amountRequested}` : "—"}
-                </td>
+                
                 <td className="px-4 py-3">
                   <span
                     className={`font-semibold capitalize ${

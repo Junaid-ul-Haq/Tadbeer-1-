@@ -7,8 +7,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logout } from "@/redux/slices/authSlice";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
-
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6"; 
 export default function Navbar() {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -62,20 +62,26 @@ export default function Navbar() {
           </div>
 
           {/* Right: Social Icons */}
-          <div className="flex gap-5 items-center">
-            {[FaFacebook, FaInstagram, FaLinkedin, FaTwitter].map(
-              (Icon, idx) => (
-                <a
-                  key={idx}
-                  href="#"
-                  target="_blank"
-                  className="hover:text-[var(--accent-color)] transition-all duration-300 transform hover:scale-110"
-                >
-                  <Icon className="w-5 h-5" />
-                </a>
-              )
-            )}
-          </div>
+         <div className="flex gap-5 items-center">
+  {[
+    { Icon: FaFacebook, link: "https://web.facebook.com/tadbeerofficial1" },
+    { Icon: FaInstagram, link: "https://www.instagram.com/tadbeerofficial?fbclid=IwY2xjawNLDYpleHRuA2FlbQIxMABicmlkETA4bVFLeW5paHZYeHdVUmRLAR7hJvaG86pORayMMZe_8ZkoK0NS0Zi4MRwa2MFt6sznMnjeIp7ZhzLEdi4dfA_aem_AHhYs999ZunLiRTZvMYG_g" },
+    { Icon: FaLinkedin, link: "https://www.linkedin.com/company/tadbeerofficial/?viewAsMember=true" },
+   
+        { Icon: FaXTwitter, link: "https://x.com/CentreTadb42387" }, // ✅ X icon
+  ].map(({ Icon, link }, idx) => (
+    <a
+      key={idx}
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:text-[var(--accent-color)] transition-all duration-300 transform hover:scale-110"
+    >
+      <Icon className="w-5 h-5" />
+    </a>
+  ))}
+</div>
+
         </div>
       </div>
 
@@ -129,10 +135,10 @@ export default function Navbar() {
               </button>
 
               <div className="absolute left-0 mt-3 w-56 bg-[var(--surface-color)] border border-white/10 shadow-xl rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
-                {["Scholarships", "Business Grants", "Consultations"].map((item) => (
+                {["Scholarships", "Grants", "Consultation"].map((item) => (
                   <Link
                     key={item}
-                    href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    href={`/user/${item.toLowerCase().replace(" ", "-")}`}
                     className="block px-6 py-3 text-base font-medium text-[var(--text-color)] hover:bg-[var(--accent-color)] hover:text-white transition-colors rounded-md"
                   >
                     {item}

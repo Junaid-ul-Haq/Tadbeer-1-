@@ -12,8 +12,7 @@ export const fetchUserScholarships = createAsyncThunk(
       return thunkAPI.rejectWithValue(error.message || "Failed to fetch scholarships");
     }
   }
-);
-
+)
 // Fetch all scholarships (Admin)
 export const fetchAllScholarships = createAsyncThunk(
   "scholarship/fetchAll",

@@ -8,7 +8,6 @@ export default function GrantUserTable({ grants, loading }) {
         <thead className="bg-[var(--surface-color)]">
           <tr className="text-gray-400 uppercase text-sm">
             <th className="px-4 py-3 border-b border-gray-600">Title</th>
-            <th className="px-4 py-3 border-b border-gray-600">Amount</th>
             <th className="px-4 py-3 border-b border-gray-600">Status</th>
             <th className="px-4 py-3 border-b border-gray-600">Submitted On</th>
           </tr>
@@ -33,9 +32,7 @@ export default function GrantUserTable({ grants, loading }) {
                 className="hover:bg-[var(--surface-color)] transition"
               >
                 <td className="px-4 py-3 font-semibold">{g.title}</td>
-                <td className="px-4 py-3">
-                  {g.amountRequested ? `$${g.amountRequested}` : "—"}
-                </td>
+                
                 <td className="px-4 py-3">
                   <span
                     className={`font-semibold capitalize ${

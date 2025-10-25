@@ -11,12 +11,10 @@ export default function GrantForm({ onSuccess }) {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    amountRequested: "",
     proposal: null,
   });
   const [loading, setLoading] = useState(false);
 
-  // 🟢 Handle input change
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setForm((prev) => ({
@@ -25,31 +23,31 @@ export default function GrantForm({ onSuccess }) {
     }));
   };
 
-  // 🟢 Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!token) {
+      toast.error("Authentication token missing. Please login again.");
+      return;
+    }
 
+    setLoading(true);
     const formData = new FormData();
     formData.append("title", form.title);
     formData.append("description", form.description);
-    if (form.amountRequested)
-      formData.append("amountRequested", form.amountRequested);
     if (form.proposal) formData.append("proposal", form.proposal);
 
     try {
-      await dispatch(createGrant({ token, formData })).unwrap();
+      console.log("Submitting Grant with token:", token);
+      const result = await dispatch(createGrant({ token, formData })).unwrap();
       toast.success("✅ Grant submitted successfully!");
       await dispatch(getMyGrants(token));
-      setForm({
-        title: "",
-        description: "",
-        amountRequested: "",
-        proposal: null,
-      });
+
+      setForm({ title: "", description: "", proposal: null });
+      e.target.reset();
       onSuccess && onSuccess();
     } catch (err) {
-      toast.error(`❌ ${err.message || "Failed to submit grant."}`);
+      console.error("Grant submission error:", err);
+      toast.error(`❌ ${err || "Failed to submit grant"}`);
     } finally {
       setLoading(false);
     }
@@ -64,7 +62,6 @@ export default function GrantForm({ onSuccess }) {
         Apply for Business Grant
       </h2>
 
-      {/* Grant Title */}
       <input
         type="text"
         name="title"
@@ -75,7 +72,6 @@ export default function GrantForm({ onSuccess }) {
         className="p-2 border rounded bg-[var(--surface-color)] text-[var(--text-color)]"
       />
 
-      {/* Description */}
       <textarea
         name="description"
         placeholder="Describe your business idea..."
@@ -86,17 +82,6 @@ export default function GrantForm({ onSuccess }) {
         className="p-2 border rounded bg-[var(--surface-color)] text-[var(--text-color)]"
       />
 
-      {/* Amount Requested */}
-      <input
-        type="number"
-        name="amountRequested"
-        placeholder="Amount Requested (optional)"
-        value={form.amountRequested}
-        onChange={handleChange}
-        className="p-2 border rounded bg-[var(--surface-color)] text-[var(--text-color)]"
-      />
-
-      {/* Proposal File Upload */}
       <input
         type="file"
         name="proposal"
@@ -105,7 +90,6 @@ export default function GrantForm({ onSuccess }) {
         className="p-2 border rounded bg-[var(--surface-color)] text-[var(--text-color)]"
       />
 
-      {/* Submit Button */}
       <button
         type="submit"
         disabled={loading}
